@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ws_germany_ae3/models/user_profile.dart';
+import 'package:ws_germany_ae3/services/pick_image_service.dart';
+import 'package:ws_germany_ae3/services/posts_service.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key, required this.userName});
@@ -12,25 +13,38 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  List<UserProfile> userProfile = [];
-  TextEditingController _captionController = TextEditingController();
   Uint8List? image;
+  Uint8List? newImage;
 
-  bool _userHavePosts = false;
-  String captionText = 'Press edit to change the caption text';
+  final postsService = PostsService();
 
-  Future<Uint8List> pickImage() async {
-    ByteData imageData = await rootBundle.load('assets/starman.jfif');
-    return imageData.buffer.asUint8List();
+  Future<void> _loadUserData() async {
+    Map<String, dynamic>? userProfile = await postsService.getUserProfileData(widget.userName);
+    if (userProfile != null) {
+      setState(() {
+        image = userProfile['image'];
+        descriptionText = userProfile['description'];
+      });
+    } else {
+      print("User data not found");
+    }
   }
 
-  void addPost(Uint8List image, String description) {
-    userProfile.add(UserProfile(image, description));
+  bool _userHavePosts = false;
+
+  // stuff for description
+  TextEditingController _descriptionController = TextEditingController();
+  String descriptionText = 'Press edit to change the caption text';  
+
+  @override
+  void initState() {
+    _loadUserData();
+    super.initState();
   }
 
   @override
   void dispose() {
-    _captionController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -53,38 +67,56 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      Uint8List newImage = await pickImage();
-                      setState(() {
-                        image = newImage;
-                      });
+                      try {
+                        newImage =
+                            await PickImageService.pickImageFromGallery();
+
+                        if (newImage != null) {
+                          setState(() {
+                            image = newImage;
+                          });
+                          setDialogState(
+                              () {}); 
+                        } else {
+                          throw 'No image selected';
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to pick image: $e')),
+                        );
+                      }
                     },
                     child: Container(
-                        alignment: Alignment.bottomCenter,
-                        clipBehavior: Clip.hardEdge,
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: image != null
-                                    ? MemoryImage(image!)
-                                    : const AssetImage(
-                                        'assets/Default Profile Picture.png')),
-                            border: Border.all(
-                                color: Colors.black,
-                                style: BorderStyle.solid,
-                                width: 2.5),
-                            shape: BoxShape.circle),
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 30,
-                          width: double.infinity,
-                          color: Colors.grey[800],
-                          child: const Text(
-                            'Tap to edit',
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                          ),
-                        )),
+                      alignment: Alignment.bottomCenter,
+                      clipBehavior: Clip.hardEdge,
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                          image: image != null
+                              ? DecorationImage(
+                                  image: MemoryImage(image!),
+                                  fit: BoxFit.cover,
+                                )
+                              : const DecorationImage(
+                                  image: AssetImage(
+                                      'assets/Default Profile Picture.png'),
+                                ),
+                          border: Border.all(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                              width: 2.5),
+                          shape: BoxShape.circle),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 30,
+                        width: double.infinity,
+                        color: Colors.grey[800],
+                        child: const Text(
+                          'Tap to edit',
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   const Text(
@@ -95,19 +127,20 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Card(
                       child: TextField(
-                        decoration: const InputDecoration(label: Text('Description')),
-                        controller: _captionController,
+                        decoration:
+                            const InputDecoration(label: Text('Description')),
+                        controller: _descriptionController,
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
-                      if (_captionController.text.isNotEmpty && image != null) {
+                      if (_descriptionController.text.isNotEmpty && image != null) {
                         setState(() {
-                          captionText = _captionController.text;
-                          addPost(image!, _captionController.text);
+                          descriptionText = _descriptionController.text;
                         });
+                        PostsService().saveUserProfile(widget.userName, image!, _descriptionController.text,);
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -185,7 +218,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     SizedBox(
                       width: 230,
                       child: Text(
-                        captionText,
+                        descriptionText,
                       ),
                     ),
                     const SizedBox(height: 10),

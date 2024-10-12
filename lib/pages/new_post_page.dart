@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ws_germany_ae3/services/pick_image_service.dart';
 
 class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
@@ -14,19 +15,6 @@ class _NewPostPageState extends State<NewPostPage> {
 
   TextEditingController _descriptionController = TextEditingController();
   String description = '';
-
-  static const MethodChannel _channel = MethodChannel("image_picker_channel");
-
-  static Future<Uint8List?> pickImageFromGallery() async {
-    try {
-      final Uint8List? imageBytes = await _channel.invokeMethod('pickImage');
-      debugPrint('$imageBytes');
-      return imageBytes;
-    } catch (e) {
-      print('This was the error: $e');
-      return null;
-    }
-  }
 
   @override
   void dispose() {
@@ -84,7 +72,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    newImage = await pickImageFromGallery();
+                    newImage = await PickImageService.pickImageFromGallery();
                     if (newImage != null) {
                       debugPrint("Image picked with $newImage bytes.");
                       setState(() {
