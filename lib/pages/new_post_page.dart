@@ -36,94 +36,144 @@ class _NewPostPageState extends State<NewPostPage> {
       ),
       body: SingleChildScrollView(
         child: Center(
-          child: Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 200),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.black, width: 3)),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // pick the image
-                const SizedBox(height: 10),
                 Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   alignment: Alignment.center,
-                  width: 300,
-                  height: 200,
+                  child: const Text('Post Preview:', style: TextStyle(fontSize: 26),),
+                ),
+                Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey,
-                      image: image != null
-                          ? DecorationImage(
-                              fit: BoxFit.cover,
-                              image: MemoryImage(image!),
-                            )
-                          : null),
-                  child: image != null
-                      ? null
-                      : const Text(
-                          'Select image',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    newImage = await PickImageService.pickImageFromGallery();
-                    if (newImage != null) {
-                      debugPrint("Image picked with $newImage bytes.");
-                      setState(() {
-                        image = newImage;
-                      });
-                    } else {
-                      debugPrint("No image picked.");
-                    }
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: const Color.fromARGB(255, 1, 53, 95),
-                    ),
-                    child: const Text(
-                      'Pick Image',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
+                      border: Border.all(color: Colors.black, width: 3)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      // account and so on
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            width: 35,
+                            height: 35,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.black,
+                                    width: 1,
+                                    style: BorderStyle.solid)),
+                            child: Image.asset(
+                              'assets/Default Profile Picture.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          const Text(
+                            'benjamin_frost',
+                            style: TextStyle(fontSize: 18),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      // image for post
+                      GestureDetector(
+                        onTap: () async {
+                          newImage =
+                              await PickImageService.pickImageFromGallery();
+                          if (newImage != null) {
+                            debugPrint("Image picked with $newImage bytes.");
+                            setState(() {
+                              image = newImage;
+                            });
+                          } else {
+                            debugPrint("No image picked.");
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 180,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey,
+                              image: image != null
+                                  ? DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: MemoryImage(image!),
+                                    )
+                                  : null),
+                          child: image != null
+                              ? null
+                              : const Text(
+                                  'Tap to select',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                        ),
+                      ),
+
+                      // buttons to react and caption
+                      Container(
+                        padding: const EdgeInsets.only(top: 5, left: 5),
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.favorite_border_outlined,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.comment)),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.share)),
+                            const Text('my first post'),
+                          ],
+                        ),
+                      ),
+
+                      // pick the image
+                      TextField(
+                        controller: _descriptionController,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Description'),
+                      ),
+                      const SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black,
+                          ),
+                          child: const Text(
+                            'ADD POST',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Description'),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.black,
-                    ),
-                    child: const Text(
-                      'ADD POST',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
               ],
             ),
           ),
