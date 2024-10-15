@@ -13,13 +13,30 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
+  // user profile data
   Uint8List? image;
   Uint8List? newImage;
 
+  // posts data
+  String? postUsername;
+  Uint8List? userImage;
+  Uint8List? postImage;
+  String? postDescription;
+  int? likeCount;
+  List<String>? comments;
+
   final postsService = PostsService();
+  
+  @override
+  void initState() {
+    _loadUserData();
+    super.initState();
+  }
+
 
   Future<void> _loadUserData() async {
-    Map<String, dynamic>? userProfile = await postsService.getUserProfileData(widget.userName);
+    Map<String, dynamic>? userProfile =
+        await postsService.getUserProfileData(widget.userName);
     if (userProfile != null) {
       setState(() {
         image = userProfile['image'];
@@ -30,17 +47,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-  bool _userHavePosts = false;
+  Future<void> _loadPostsData() async {
+    Map<String, dynamic>? postsData = await postsService.getPostsData(widget.userName);
+    if (postsData != null) {
+      setState(() {
+        postUsername = postsData['username'];
+        userImage = postsData['userImage'];
+        postImage = postsData['postImage'];
+        postDescription = postsData['postDescription'];
+        likeCount = postsData['likeCount'];
+        comments = postsData['comments'];
+      });
+      debugPrint('$postsData');
+    } else {
+      debugPrint('No data found');
+    }
+  } 
 
   // stuff for description
   TextEditingController _descriptionController = TextEditingController();
-  String descriptionText = 'Press edit to change the caption text';  
+  String descriptionText = 'Press edit to change the caption text';
 
-  @override
-  void initState() {
-    _loadUserData();
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -75,8 +102,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           setState(() {
                             image = newImage;
                           });
-                          setDialogState(
-                              () {}); 
+                          setDialogState(() {});
                         } else {
                           throw 'No image selected';
                         }
@@ -136,11 +162,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
-                      if (_descriptionController.text.isNotEmpty && image != null) {
+                      if (_descriptionController.text.isNotEmpty &&
+                          image != null) {
                         setState(() {
                           descriptionText = _descriptionController.text;
                         });
-                        PostsService().saveUserProfile(widget.userName, image!, _descriptionController.text,);
+                        PostsService().saveUserProfile(
+                          widget.userName,
+                          image!,
+                          _descriptionController.text,
+                        );
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -278,41 +309,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
 
           // grid with posts and images
-          _userHavePosts
-              ? Expanded(
-                  child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 100,
-                          height: 100,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 1,
-                            ),
-                          ),
-                          child: const Text(
-                            'Post preview',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        );
-                      }),
-                )
-              : Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
+              itemBuilder: (context, index) {
+                return Container(
+                  width: 100,
+                  height: 100,
                   alignment: Alignment.center,
-                  child: const Text(
-                    "You don't have posts yet, let's start creating them",
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
                   ),
-                )
+                  child: const Text(
+                    'Post preview',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                );
+              },
+            ),
+          )
         ],
       ),
     );

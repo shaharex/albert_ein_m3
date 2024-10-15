@@ -5,6 +5,7 @@ import 'package:ws_germany_ae3/pages/login_page.dart';
 void main() {
   runApp( MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,4 +20,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}      
+}     

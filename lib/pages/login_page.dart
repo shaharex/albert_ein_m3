@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.android, size: 100),
+              const Icon(Icons.south_america_sharp, size: 100),
               const Text(
                 'Please enter your username to login!',
                 style: TextStyle(fontSize: 26),
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color.fromARGB(255, 1, 53, 95),
+                    color: Colors.black,
                   ),
                   child: const Text(
                     'LOGIN',

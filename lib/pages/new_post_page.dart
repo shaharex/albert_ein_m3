@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ws_germany_ae3/services/pick_image_service.dart';
+import 'package:ws_germany_ae3/services/posts_service.dart';
 
 class NewPostPage extends StatefulWidget {
-  const NewPostPage({super.key});
+  const NewPostPage({super.key, required this.username});
+  final String username;
 
   @override
   State<NewPostPage> createState() => _NewPostPageState();
 }
 
 class _NewPostPageState extends State<NewPostPage> {
+  final postsService = PostsService();
+
   Uint8List? image;
   Uint8List? newImage;
 
@@ -77,9 +81,9 @@ class _NewPostPageState extends State<NewPostPage> {
                           const SizedBox(
                             width: 15,
                           ),
-                          const Text(
-                            'benjamin_frost',
-                            style: TextStyle(fontSize: 18),
+                          Text(
+                            widget.username,
+                            style: const TextStyle(fontSize: 18),
                           )
                         ],
                       ),
@@ -139,7 +143,7 @@ class _NewPostPageState extends State<NewPostPage> {
                             IconButton(
                                 onPressed: () {},
                                 icon: const Icon(Icons.share)),
-                            const Text('my first post'),
+                            const Text('.......'),
                           ],
                         ),
                       ),
@@ -155,7 +159,12 @@ class _NewPostPageState extends State<NewPostPage> {
                       ),
                       const SizedBox(height: 10),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          // if (_descriptionController.text.isNotEmpty && image != null) {
+                          //   postsService.addPost(image!, _descriptionController.text, widget.username, image!);
+                          // }
+                          Navigator.pop(context);
+                        },
                         child: Container(
                           alignment: Alignment.center,
                           width: double.infinity,

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key});
+  PostWidget({
+    super.key,
+    required this.likeCount,
+    required this.isLikePressed,
+    required this.onLikePressed,
+    required this.onCommentPressed,
+    required this.onSharePressed,
+  });
+  final int likeCount;
+  final bool isLikePressed;
+  final Function()? onLikePressed;
+  final Function()? onCommentPressed;
+  final Function()? onSharePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +78,18 @@ class PostWidget extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
+                    onPressed: onLikePressed,
+                    icon:  Icon(
+                      isLikePressed ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: isLikePressed ? Colors.red : null,
+                    )),
+                Text('$likeCount'),
+                IconButton(
                     onPressed: () {},
                     icon: const Icon(
-                      Icons.favorite_border_outlined,
+                      Icons.comment,
                     )),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
+                IconButton(onPressed: onSharePressed, icon: const Icon(Icons.share)),
                 const Text('my first post'),
               ],
             ),

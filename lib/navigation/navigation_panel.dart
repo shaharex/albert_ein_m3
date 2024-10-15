@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ws_germany_ae3/pages/map_page.dart';
 import 'package:ws_germany_ae3/pages/new_post_page.dart';
 import 'package:ws_germany_ae3/pages/user_profile_page.dart';
+import 'package:ws_germany_ae3/services/posts_service.dart';
 
 import '../pages/feed_page.dart';
 
@@ -14,6 +15,7 @@ class NavigationPanel extends StatefulWidget {
 }
 
 class _NavigationPanelState extends State<NavigationPanel> {
+  final postsService = PostsService();
   int currentPageIndex = 0;
 
   @override
@@ -45,7 +47,7 @@ class _NavigationPanelState extends State<NavigationPanel> {
       floatingActionButtonLocation: currentPageIndex == 1 ? FloatingActionButtonLocation.startFloat : FloatingActionButtonLocation.endFloat,
       floatingActionButton: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => NewPostPage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => NewPostPage(username: widget.userName,)));
         },
         child: Container(
           width: 120,
