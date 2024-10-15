@@ -10,7 +10,10 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  // share method 
  static const sharePlatform = MethodChannel("com.share");
+
+  // show the Android Share Sheet
   Future<void> _openShareSheet(String text) async {
     try {
       await sharePlatform.invokeMethod('share', {"text": text});
@@ -18,6 +21,84 @@ class _FeedPageState extends State<FeedPage> {
       debugPrint('This is the Error: ${e.message}');
     }
   }
+
+  final TextEditingController _commentsController = TextEditingController();
+
+  // open the comments dialog
+  void _showCommentsDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        width: double.infinity,
+        height: 400,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Comments:', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold ),),
+            Expanded(
+              child: ListView.separated(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+              return Row(
+                children: [
+                  CircleAvatar(radius: 18, child: Image.asset("assets/Default Profile Picture.png", fit: BoxFit.cover,)),
+                  const SizedBox(width: 10),
+                  Text("This is the comment of mine and it is the ${index + 1}", maxLines: 2, overflow: TextOverflow.ellipsis,),
+                ],
+              );
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(height: 5);
+            },)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Add comment:', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                TextField(controller: _commentsController,),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        decoration: BoxDecoration(border: Border.all(color: Colors.black, width: 2, style: BorderStyle.solid), borderRadius: BorderRadius.circular(5)),
+                        child: const Text("Cancel", style: TextStyle(fontSize: 20),),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(5)),
+                        child: const Text("Submit", style: TextStyle(fontSize: 20, color: Colors.white),),
+                      ),
+                    ),
+                  ),
+                ],)
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
 
   int likeCount = 0;
   bool isLikePressed = false;
@@ -32,7 +113,7 @@ class _FeedPageState extends State<FeedPage> {
           child: ListView.separated(
               itemCount: 5,
               separatorBuilder: (context, index) {
-                return SizedBox(height: 20);
+                return const SizedBox(height: 20);
               },
               itemBuilder: (context, index) {
                 return PostWidget(
@@ -46,7 +127,9 @@ class _FeedPageState extends State<FeedPage> {
                     debugPrint(
                         "likeCount: $likeCount, isLikePressed: $isLikePressed");
                   },
-                  onCommentPressed: () {},
+                  onCommentPressed: () {
+                    _showCommentsDialog(context);
+                  },
                   onSharePressed: () {
                     _openShareSheet("Check out the Bay City");
                   },

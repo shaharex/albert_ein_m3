@@ -85,7 +85,7 @@ class PostWidget extends StatelessWidget {
                     )),
                 Text('$likeCount'),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: onCommentPressed,
                     icon: const Icon(
                       Icons.comment,
                     )),
