@@ -11,7 +11,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(-33.86, 151.20);
+  final LatLng _center = const LatLng(50, 16);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -24,12 +24,20 @@ class _MapPageState extends State<MapPage> {
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
           target: _center,
-          zoom: 11.0,
+          zoom: 8.0,
         ),
-        markers: {
-          const Marker(
+        markers:  {
+           const Marker(
             markerId: MarkerId('Shaha\'s house'),
-            position: LatLng(-33.86, 151.2),
+            position: LatLng(6, 50.20),
+            infoWindow: InfoWindow(
+              title: "Shaha\'s house",
+              snippet: "This is the Shah's home",
+            )
+          ),
+           const Marker(
+            markerId: MarkerId('Shaha\'s house'),
+            position: LatLng(0.0, 0.0),
             infoWindow: InfoWindow(
               title: "Shaha\'s house",
               snippet: "This is the Shah's home",

@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.InputStream
+import java.util.jar.Manifest
 
 class MainActivity : FlutterActivity() {
     private val PICK_IMAGE = 100;
@@ -19,11 +21,12 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "image_picker_channel"
     private val CHANNELSH = "com.sharedpref"
     private val CHANNELSS = "com.share"
+    private val CHANNELCC = "com.camera"
 
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        
+
 
         // method for picking image
         MethodChannel(
@@ -169,8 +172,21 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNELCC).setMethodCallHandler {
+                call, result -> {
+            when(call.method) {
+                "openCamera" -> {
+
+                }
+            }
+        }
+        }
+
     }
 
+    // open camera to take photo
+
+    // share button to open android ShareSheet
     private fun shareText(text: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -181,6 +197,8 @@ class MainActivity : FlutterActivity() {
         startActivity(shareIntent)
     }
 
+
+    // function for opening the gallery
     private fun openGallery() {
         val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(gallery, PICK_IMAGE)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PostWidget extends StatelessWidget {
-  PostWidget({
+  const PostWidget({
     super.key,
     required this.likeCount,
     required this.isLikePressed,
