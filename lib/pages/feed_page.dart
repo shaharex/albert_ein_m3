@@ -10,6 +10,21 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  List<String> commentsList = [
+    "This is the banger",
+    "Bay city",
+    "OutOfmemoryError is the most common problem that occurs in android while especially dealing with bitmaps.So here is how to solve it: https://stackoverflow.com"
+    "You're right and it is thrown by JVM when an object cannot be allocated due to lack of memory space",
+    "Or teh grabage collector cannot free some space",
+    "You can add below enitites to solve this problem:"
+  ];
+
+  void addComment(String comment) {
+    setState(() {
+      commentsList.add(comment);
+    });
+  }
+
   // share method
   static const sharePlatform = MethodChannel("com.share");
 
@@ -42,7 +57,7 @@ class _FeedPageState extends State<FeedPage> {
               ),
               Expanded(
                   child: ListView.separated(
-                itemCount: 10,
+                itemCount: commentsList.length,
                 itemBuilder: (context, index) {
                   return Row(
                     children: [
@@ -53,10 +68,12 @@ class _FeedPageState extends State<FeedPage> {
                             fit: BoxFit.cover,
                           )),
                       const SizedBox(width: 10),
-                      Text(
-                        "This is the comment of mine and it is the ${index + 1}",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Text(
+                          commentsList[index],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   );
@@ -105,7 +122,12 @@ class _FeedPageState extends State<FeedPage> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            if (_commentsController.text.isNotEmpty) {
+                              addComment(_commentsController.text);
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Pleas write something, God dammit it")));
+                            }
                           },
                           child: Container(
                             alignment: Alignment.center,

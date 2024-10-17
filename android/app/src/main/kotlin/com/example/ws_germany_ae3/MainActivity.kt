@@ -110,7 +110,6 @@ class MainActivity : FlutterActivity() {
                         put("postImage", call.argument<String>("postImage"))
                         put("postDescription", call.argument<String>("postDescription"))
                         put("likeCount", call.argument<Int>("likeCount"))
-                        put("comments", JSONArray(call.argument<List<Any>>("comments")))
                     }
 
                     posts.put(newPost)
@@ -132,20 +131,13 @@ class MainActivity : FlutterActivity() {
                     for (i in 0 until posts.length()) {
                         val post = posts.getJSONObject(i)
                         if (post.getString("username") == username) {
-                            val commentsArray = post.getJSONArray("comments")
-                            val commentsList = ArrayList<String>()
-                            for (j in 0 until commentsArray.length()) {
-                                commentsList.add(commentsArray.getString(i))
-                            }
-
                             result.success(
                                 mapOf(
                                     "username" to post.getString("username"),
                                     "userImage" to post.getString("userImage"),
                                     "postImage" to post.getString("postImage"),
                                     "postDescription" to post.getString("postDescription"),
-                                    "likeCount" to post.getInt("likeCount"),
-                                    "comments" to commentsList,
+                                    "likeCount" to post.getInt("likeCount")
                                 )
                             )
                             return@setMethodCallHandler

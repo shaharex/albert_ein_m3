@@ -48,7 +48,10 @@ class _NewPostPageState extends State<NewPostPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   alignment: Alignment.center,
-                  child: const Text('Post Preview:', style: TextStyle(fontSize: 26),),
+                  child: const Text(
+                    'Post Preview:',
+                    style: TextStyle(fontSize: 26),
+                  ),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -160,9 +163,6 @@ class _NewPostPageState extends State<NewPostPage> {
                       const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
-                          // if (_descriptionController.text.isNotEmpty && image != null) {
-                          //   postsService.addPost(image!, _descriptionController.text, widget.username, image!);
-                          // }
                           Navigator.pop(context);
                         },
                         child: Container(

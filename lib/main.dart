@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: LoginPage(),

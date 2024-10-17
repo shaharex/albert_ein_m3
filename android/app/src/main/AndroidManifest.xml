@@ -5,7 +5,9 @@
     <application
         android:label="ws_germany_ae3"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true">
 
 
         <meta-data 

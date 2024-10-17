@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ws_germany_ae3/pages/user_post_page.dart';
 import 'package:ws_germany_ae3/services/pick_image_service.dart';
 import 'package:ws_germany_ae3/services/posts_service.dart';
 
@@ -17,22 +18,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Uint8List? image;
   Uint8List? newImage;
 
-  // posts data
-  String? postUsername;
-  Uint8List? userImage;
-  Uint8List? postImage;
-  String? postDescription;
-  int? likeCount;
-  List<String>? comments;
 
   final postsService = PostsService();
-  
+
   @override
   void initState() {
     _loadUserData();
     super.initState();
   }
-
 
   Future<void> _loadUserData() async {
     Map<String, dynamic>? userProfile =
@@ -47,27 +40,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-  Future<void> _loadPostsData() async {
-    Map<String, dynamic>? postsData = await postsService.getPostsData(widget.userName);
-    if (postsData != null) {
-      setState(() {
-        postUsername = postsData['username'];
-        userImage = postsData['userImage'];
-        postImage = postsData['postImage'];
-        postDescription = postsData['postDescription'];
-        likeCount = postsData['likeCount'];
-        comments = postsData['comments'];
-      });
-      debugPrint('$postsData');
-    } else {
-      debugPrint('No data found');
-    }
-  } 
-
   // stuff for description
   TextEditingController _descriptionController = TextEditingController();
   String descriptionText = 'Press edit to change the caption text';
-
 
   @override
   void dispose() {
@@ -300,7 +275,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ),
 
-          // diveder
+          // divider
           Container(
             margin: const EdgeInsets.only(top: 10),
             width: double.infinity,
@@ -311,23 +286,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
           // grid with posts and images
           Expanded(
             child: GridView.builder(
+              itemCount: 3,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),
               itemBuilder: (context, index) {
-                return Container(
-                  width: 100,
-                  height: 100,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserPostPage()));
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Post preview',
-                    style: TextStyle(fontSize: 20),
+                    child: const Text(
+                      'Post preview',
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
                 );
               },

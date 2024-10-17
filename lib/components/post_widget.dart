@@ -23,6 +23,7 @@ class PostWidget extends StatelessWidget {
           color: Colors.grey[300], borderRadius: BorderRadius.circular(5)),
       width: double.infinity,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // account and so on
           Row(
